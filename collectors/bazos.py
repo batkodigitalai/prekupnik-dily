@@ -14,7 +14,7 @@ from common import fetch, parse_price
 from config import HLEDAT, PREKLEPY, LOKALITA_PSC, OKRUH_KM
 
 BASE = "https://auto.bazos.cz/"
-SEARCH = "https://auto.bazos.cz/nahradni-dily/"  # jen rubrika Náhradní díly
+RUBRIKY = ["nahradnidily", "pneumatiky", "prislusenstvi"]  # ověřeno 1. 11. 2026: bez pomlčky
 INZERAT_RE = re.compile(r"/inzerat/(\d+)/")
 
 
@@ -56,13 +56,14 @@ def _parse_listing(html, typ):
 def collect():
     rows = []
     for q in HLEDAT + PREKLEPY:
-        html = fetch(
-            SEARCH,
-            params={"hledat": q, "hlokalita": LOKALITA_PSC, "humkreis": OKRUH_KM, "cenaod": "", "cenado": ""},
-        )
-        if not html:
-            continue
-        found = _parse_listing(html, "prodam")
+        found = []
+        for rub in RUBRIKY:
+            html = fetch(
+                f"{BASE}{rub}/",
+                params={"hledat": q, "hlokalita": LOKALITA_PSC, "humkreis": OKRUH_KM, "cenaod": "", "cenado": ""},
+            )
+            if html:
+                found.extend(_parse_listing(html, "prodam"))
         # Bazoš dává „koupím“ do stejné rubriky; poznáme je podle textu názvu
         for r in found:
             if re.match(r"\s*(koupim|koupím|sháním|shanim|hledám|hledam)\b", r["nazev"], re.I):
