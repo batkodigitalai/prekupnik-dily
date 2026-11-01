@@ -9,7 +9,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import annonce, aukro, bazos, sbazar  # noqa: E402
 from common import db, log_error, save  # noqa: E402
 
-ZDROJE = {"bazos": bazos, "sbazar": sbazar, "aukro": aukro, "annonce": annonce}
+# Aukro a Annonce blokují GitHub (403) – sbírají se z počítače uživatele přes run_local.py
+ZDROJE = {"bazos": bazos, "sbazar": sbazar}
 
 
 def main():
@@ -39,6 +40,12 @@ def main():
     ]
     for name, n, new, err in summary:
         lines.append(f"| {name} | {n} | {new} | {err} |")
+    for name in ("aukro", "annonce"):
+        last = con.execute("SELECT cas, nalezeno, novych, chyba FROM behy WHERE zdroj=? ORDER BY cas DESC LIMIT 1", (name,)).fetchone()
+        if last:
+            lines.append(f"| {name} (z PC, naposledy {last[0][:16].replace('T',' ')} UTC) | {last[1]} | {last[2]} | {last[3] or ''} |")
+        else:
+            lines.append(f"| {name} (z PC) | – | – | zatím neběželo |")
     lines += [
         "",
         f"Celkem v databázi: **{total}** inzerátů, z toho s cenou {with_price}, "
