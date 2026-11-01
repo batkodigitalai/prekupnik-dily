@@ -2,7 +2,7 @@ name: Sběr inzerátů
 
 on:
   schedule:
-    - cron: "*/20 * * * *"   # každých 20 minut (GitHub může běh o pár minut zdržet)
+    - cron: "7,27,47 * * * *"   # 3x za hodinu, mimo přetížené celé hodiny
   workflow_dispatch:
 
 permissions:
