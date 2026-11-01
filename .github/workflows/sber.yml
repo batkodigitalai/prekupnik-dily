@@ -1,0 +1,33 @@
+name: Sběr inzerátů
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"   # každých 20 minut (GitHub může běh o pár minut zdržet)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sber
+  cancel-in-progress: false
+
+jobs:
+  sber:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests beautifulsoup4
+      - run: python collectors/run.py
+      - name: Uložit data do repozitáře
+        run: |
+          git config user.name "sberac"
+          git config user.email "sberac@users.noreply.github.com"
+          git add data/
+          git commit -m "sběr $(date -u +'%Y-%m-%d %H:%M') UTC" || echo "nic nového"
+          git pull --rebase -q || true
+          git push
