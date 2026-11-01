@@ -14,6 +14,7 @@ from common import fetch, parse_price
 from config import HLEDAT, PREKLEPY, LOKALITA_PSC, OKRUH_KM
 
 BASE = "https://auto.bazos.cz/"
+SEARCH = "https://auto.bazos.cz/nahradni-dily/"  # jen rubrika Náhradní díly
 INZERAT_RE = re.compile(r"/inzerat/(\d+)/")
 
 
@@ -32,12 +33,12 @@ def _parse_listing(html, typ):
             if box.parent is None:
                 break
             box = box.parent
-            if box.name == "div" and "inzeraty" in " ".join(box.get("class", [])):
+            if box.name == "div" and "inzeraty" in box.get("class", []):  # přesná třída, ne 'inzeratynadpis'
                 break
         text = box.get_text(" ", strip=True)
-        price_el = box.find(class_=re.compile("cena"))
-        lok_el = box.find(class_=re.compile("lok"))
-        popis_el = box.find(class_=re.compile("popis"))
+        price_el = box.find("div", class_="inzeratycena")
+        lok_el = box.find("div", class_="inzeratylok")
+        popis_el = box.find("div", class_="popis")
         rows.append(
             {
                 "id": iid,
@@ -56,7 +57,7 @@ def collect():
     rows = []
     for q in HLEDAT + PREKLEPY:
         html = fetch(
-            BASE,
+            SEARCH,
             params={"hledat": q, "hlokalita": LOKALITA_PSC, "humkreis": OKRUH_KM, "cenaod": "", "cenado": ""},
         )
         if not html:
