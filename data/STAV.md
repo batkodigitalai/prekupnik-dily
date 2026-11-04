@@ -1,14 +1,14 @@
 # Stav sběrače – autodíly
 
-Poslední běh: 04. 11. 2026 11:01 (čas Praha)
+Poslední běh: 04. 11. 2026 19:03 (čas Praha)
 
 | Zdroj | Nalezeno v běhu | Nových | Chyba |
 |---|---|---|---|
-| bazos | 1189 | 81 |  |
-| sbazar | 1180 | 412 |  |
+| bazos | 1184 | 29 |  |
+| sbazar | 1180 | 322 |  |
 | aukro (z PC, naposledy 2026-11-01 12:48 UTC) | 0 | 0 |  |
 | annonce (z PC, naposledy 2026-11-01 12:48 UTC) | 0 | 0 |  |
 
-Celkem v databázi: **7108** inzerátů, z toho s cenou 5875, „koupím“ 2, ukončené aukce s dosaženou cenou 0.
+Celkem v databázi: **7459** inzerátů, z toho s cenou 6220, „koupím“ 2, ukončené aukce s dosaženou cenou 0.
 
 Databáze: `data/inzeraty.sqlite`. Hlášení podhodnocených kusů začne, až bude dost referenčních cen (cíl: 14 dní sběru).
